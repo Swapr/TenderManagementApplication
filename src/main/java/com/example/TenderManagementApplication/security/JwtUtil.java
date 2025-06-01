@@ -11,6 +11,7 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import com.example.TenderManagementApplication.model.UserModel;
 
@@ -21,15 +22,22 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 
+@Component
 public class JwtUtil {
 	
-	@Value("${jwt.secretKey}")
-	private static  String secretKey;
-	@Value("$jwt.token.validity}")
-	private static int tokenValidity;
+	
+	private   String secretKey;
+	
+	private  int tokenValidity;
+	
+    public JwtUtil(@Value("${jwt.secretKey}") String secretKey,
+            @Value("${jwt.token.validity}") int tokenValidity) {
+ this.secretKey = secretKey;
+ this.tokenValidity = tokenValidity;
+}
 	
 	
-	private static SecretKey getKey() {
+	private  SecretKey getKey() {
 		
 		byte[] keyArray = Decoders.BASE64.decode(secretKey);
 		if( keyArray.length < 32 ) {
@@ -40,7 +48,7 @@ public class JwtUtil {
 	
 	
 	
-	public static String generateToken(UserModel userModel) {
+	public  String generateToken(UserModel userModel) {
 		
 	     List<String> roles = userModel.getAuthorities().stream()
 	    		                                        .map(GrantedAuthority::getAuthority)
@@ -59,7 +67,7 @@ public class JwtUtil {
 	}
 	
 	
-	public static boolean validateToken(String token, UserDetails userDetails) {
+	public  boolean validateToken(String token, UserDetails userDetails) {
 		
 		if(userDetails != null && !isExpired(token) ) {
 			return true;
@@ -67,17 +75,17 @@ public class JwtUtil {
 		return false;
 	}
 	
-	public static String extractUsername(String token) {
+	public  String extractUsername(String token) {
 		 Claims claims =  extractAllcalims(token);
 		 return claims.getSubject();
 	}
 	
-	public static boolean isExpired(String token) {
+	public  boolean isExpired(String token) {
 		Claims claims = extractAllcalims(token);
 		return  claims.getExpiration().before(new Date(System.currentTimeMillis()));
 	}
 	
-	public static Claims extractAllcalims(String token) {
+	public  Claims extractAllcalims(String token) {
 		return Jwts.parserBuilder()
 				   .setSigningKey(getKey())
 				   .build()

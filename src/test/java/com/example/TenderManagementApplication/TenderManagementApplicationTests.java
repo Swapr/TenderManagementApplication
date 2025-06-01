@@ -87,6 +87,7 @@ class TenderManagementApplicationTests {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();
+        System.out.println("method completed ");
 
     }
 
@@ -108,7 +109,7 @@ class TenderManagementApplicationTests {
         saveDataToFileSystem(TOKEN_BIDDER_1, obj.getString("jwt"));
 
         // Bidder 2 - Successful login
-        LoginDTO loginData1 = new LoginDTO("bidderemail2@gmail.com", "bidder7895");
+        LoginDTO loginData1 = new LoginDTO("bidderemail2@gmail.com", "bidder789$");
 
         MvcResult result1 = mockMvc.perform(post("/login")
                 .content(toJson(loginData1))

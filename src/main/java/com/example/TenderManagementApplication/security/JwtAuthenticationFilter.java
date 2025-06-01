@@ -21,6 +21,8 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter{
 	
+	@Autowired
+	private JwtUtil jwtUtil;
 	
 	@Autowired
 	private UserDetailsService userDetailsService;
@@ -36,12 +38,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 		if(header != null && !header.isBlank() && header.startsWith("Bearer ")) {
 			
 			String token = header.substring(7);
-			String username = JwtUtil.extractUsername(token);
+			String username = jwtUtil.extractUsername(token);
 			UserDetails userDetails = null;
 			if(username !=null) {
 				userDetails = userDetailsService.loadUserByUsername(username);
 			} 
-			if(JwtUtil.validateToken(token,userDetails)) {
+			if(jwtUtil.validateToken(token,userDetails)) {
 				
 				List<GrantedAuthority> authorities = userDetails.getAuthorities()
 						                                        .stream()

@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.TenderManagementApplication.model.UserModel;
@@ -20,7 +21,12 @@ public class LoginService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-		return userService.getUserByEmail(username);
+		UserModel userModel  = userService.getUserByEmail(username);
+		String password = userModel.getPassword();
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		userModel.setPassword(encoder.encode(password));
+		return userModel;
+		
 	}
 	
 	

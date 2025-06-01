@@ -16,13 +16,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Users")
 public class UserModel implements UserDetails {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
@@ -97,7 +100,7 @@ public class UserModel implements UserDetails {
 	}
 
 	public String getUsername() {
-		return username;
+		return this.email;
 	}
 
 	public void setUsername(String username) {
@@ -143,6 +146,7 @@ public class UserModel implements UserDetails {
 				
 				
 	}
+	
 	
 	
 	

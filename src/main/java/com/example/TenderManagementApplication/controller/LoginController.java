@@ -1,7 +1,10 @@
 package com.example.TenderManagementApplication.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,23 +22,32 @@ public class LoginController {
 	private AuthenticationManager authenticationManager;
 	
 	@Autowired
-	private  UserService userService;
-	
-	@Autowired
 	private JwtUtil jwtUtil;
 	
-	@PostMapping("login")
-	public LoginResponse authenticateUser (@RequestBody LoginDTO authenticationRequest) throws Exception{
-		UserModel userModel = userService.getUserByEmail(authenticationRequest.getEmail());
-		LoginResponse loginResponse= new LoginResponse();
-		if(userModel == null) {
-			loginResponse.setJwt(null);
-			loginResponse.setStatus(400);
+	@Autowired
+	private  UserService userService;
+	
+	
+	@PostMapping("/login")
+	public ResponseEntity<LoginResponse> authenticateUser (@RequestBody LoginDTO authenticationRequest) throws Exception{
+		
+		try {
+			Authentication authentication =  authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(
+							authenticationRequest.getEmail(),
+							authenticationRequest.getPassword()));
+			
+			UserModel userModel = (UserModel) authentication.getPrincipal();
+			String jwtToken = jwtUtil.generateToken(userModel);
+			return ResponseEntity.ok(new LoginResponse(jwtToken,200));
+			
+			
+		} catch (Exception e) {
+			System.out.println("exception occured while authenticating");
+			LoginResponse loginResponse = new LoginResponse(null, 400); 
+			return ResponseEntity.badRequest().body(loginResponse);
+			
 		}
-		else {
-			loginResponse.setJwt(jwtUtil.generateToken(userModel));
-			loginResponse.setStatus(200);
-		}
-		return loginResponse;
+		
 	}
 }
