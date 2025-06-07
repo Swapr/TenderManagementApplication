@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.TenderManagementApplication.dto.LoginDTO;
 import com.example.TenderManagementApplication.dto.LoginResponse;
+import com.example.TenderManagementApplication.model.BiddingModel;
 import com.example.TenderManagementApplication.model.UserModel;
 import com.example.TenderManagementApplication.security.JwtUtil;
 import com.example.TenderManagementApplication.service.UserService;
@@ -49,6 +50,12 @@ public class LoginController {
 			return ResponseEntity.badRequest().body(loginResponse);
 			
 		}
+		
+	}
+	
+	@PostMapping("/signup")
+	public ResponseEntity<UserModel> singupAsBidder(@RequestBody LoginDTO loginDTO ){
+		return  userService.addNewBidder(loginDTO);
 		
 	}
 }

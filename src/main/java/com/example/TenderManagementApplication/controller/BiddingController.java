@@ -1,13 +1,8 @@
 package com.example.TenderManagementApplication.controller;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -21,7 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.TenderManagementApplication.model.BiddingModel;
 import com.example.TenderManagementApplication.service.BiddingService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping("/bidding")
 public class BiddingController {
 	

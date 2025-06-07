@@ -51,7 +51,7 @@ public class JwtSecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http.cors(cors->cors.disable())
 				   .csrf(csrf-> csrf.disable())
-				   .authorizeHttpRequests(request->request.requestMatchers("/login","/v3/api-docs/**",     
+				   .authorizeHttpRequests(request->request.requestMatchers("/login","/signup","/v3/api-docs/**",
 						    "/swagger-ui/**",      
 						    "/swagger-ui.html").permitAll().anyRequest().authenticated())
 				   .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
