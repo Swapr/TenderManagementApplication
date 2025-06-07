@@ -53,6 +53,7 @@ public class BiddingService {
 	
 	public ResponseEntity<Object> updateBidding(int id, BiddingModel biddingModel){
 		Optional<BiddingModel> optional = biddingRepository.findById(id);
+		List<BiddingModel> list = biddingRepository.findAll();
 		if(optional.isPresent()) {
 			BiddingModel biddingModel2 = optional.get();
 			biddingModel2.setStatus(biddingModel.getStatus());
@@ -65,8 +66,27 @@ public class BiddingService {
 	
 	}
 	
-	public ResponseEntity<Object> deleteBidding(int id){
-		return null;
+	public ResponseEntity<Object> deleteBidding(Integer id){
+		Optional<BiddingModel> optional = biddingRepository.findById(id);
+		if(optional.isEmpty()) {
+	    	
+	    	return ResponseEntity.badRequest().build();
+	    	
+	    }
+		if(isValidBidder(id) || isApprover()) {
+		    if(optional.isPresent()) {
+		    	biddingRepository.deleteById(id);
+		    	return ResponseEntity.noContent().build();
+		    	
+		    }else
+		    {
+		    	return ResponseEntity.badRequest().build();
+		    }
+		}
+		else
+		{
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+		}
 	}
     public String gettime() {
         long milliseconds = System.currentTimeMillis();
@@ -83,6 +103,31 @@ public class BiddingService {
         UserModel userModel  = userService.getUserByEmail(UserName);
         return userModel.getId();
         
+    }
+    public boolean isValidBidder(Integer id) {
+    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String UserName = userDetails.getUsername();
+        UserModel userModel  = userService.getUserByEmail(UserName);
+        String role = userModel.getRoleName();
+        int bidderId = userModel.getId();
+        if( role.equals("BIDDER") && bidderId == id) {
+        	return true;
+        }
+        else return false;
+    }
+    
+    public boolean isApprover() {
+    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String UserName = userDetails.getUsername();
+        UserModel userModel  = userService.getUserByEmail(UserName);
+        String role = userModel.getRoleName();
+        if(role.equals("APPROVER")) {
+        	return true;
+        }
+        else
+        	return false;
     }
 
 }

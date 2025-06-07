@@ -44,14 +44,16 @@ public class BiddingController {
 	}
 	
 	@PatchMapping("/update/{id}")
+	@PreAuthorize("hasRole('APPROVER')")
 	public ResponseEntity<Object> updateBidding(@PathVariable int id,@RequestBody BiddingModel biddingModel){
-		biddingService.updateBidding(id, biddingModel);
-		return null;
+	return 	biddingService.updateBidding(id, biddingModel);
+		
 	}
 	
-	@DeleteMapping("/delete{id}")
-	public ResponseEntity<Object> deleteBidding(int id){
-		return null;
+	@DeleteMapping("/delete/{id}")
+	//@PreAuthorize("hasRole('BIDDER') or hasRole('APPROVER')")
+	public ResponseEntity<Object> deleteBidding(@PathVariable Integer id){
+		return biddingService.deleteBidding(id);
 	}
 	
 	

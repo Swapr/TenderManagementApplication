@@ -143,8 +143,11 @@ public class UserModel implements UserDetails {
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		
 		return List.of(new SimpleGrantedAuthority("ROLE_"+this.getRole().getRolename()));
-				
-				
+							
+	}
+	
+	public String getRoleName(){
+		return this.role.getRolename();
 	}
 	
 	
