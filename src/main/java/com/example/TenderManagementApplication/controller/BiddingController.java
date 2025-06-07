@@ -9,9 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.TenderManagementApplication.model.BiddingModel;
 import com.example.TenderManagementApplication.service.BiddingService;
@@ -32,13 +36,16 @@ public class BiddingController {
 		
 	}
 	
-	@PostMapping("/list")
-	public ResponseEntity<Object> getBidding(Double bidAmount){
-		return null;
+	@GetMapping("/list")
+	public ResponseEntity<Object> getBidding(@RequestParam Double bidAmount){
+		
+		return biddingService.getBidding(bidAmount);
+		
 	}
 	
-	@PostMapping("/update{id}")
-	public ResponseEntity<Object> updateBidding(int id,BiddingModel biddingModel){
+	@PatchMapping("/update/{id}")
+	public ResponseEntity<Object> updateBidding(@PathVariable int id,@RequestBody BiddingModel biddingModel){
+		biddingService.updateBidding(id, biddingModel);
 		return null;
 	}
 	

@@ -30,6 +30,9 @@ public class JwtSecurityConfig {
 	@Autowired
 	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	
+	@Autowired
+	private CustomAccessDeniedHandler accessDeniedHandler;
+	
 	
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -49,7 +52,8 @@ public class JwtSecurityConfig {
 		return http.cors(cors->cors.disable())
 				   .csrf(csrf-> csrf.disable())
 				   .authorizeHttpRequests(request->request.requestMatchers("/login").permitAll().anyRequest().authenticated())
-				   .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+				   .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+						                                     .accessDeniedHandler(accessDeniedHandler))
 				   .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				   .addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter.class)
 				   .build();
